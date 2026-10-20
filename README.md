@@ -1,29 +1,84 @@
 # dsh-oil-title
 
-A DeepSeek Harness plugin (compatible with **0.1.x – 0.2.x**) that keeps session titles meaningful: after each turn it maintains a title of the form `<category emoji> <object>｜<ongoing goal>`.
+Keeps DeepSeek Harness session titles in sync with the work: after each turn the title becomes `<category emoji> <object>｜<ongoing goal>`, so the sidebar tells you what every session is about.
 
-This is a fork of [oil-dsh-title](https://github.com/598829314/oil-dsh-title), which ports the naming policy of [oil-codex-title](https://github.com/oil-oil/oil-codex-title) to DSH. The fork fixes installation on DSH 0.2.x and hardens runtime behaviour.
+```
+🧩 Title plugin｜0.2.x support     🎨 Login form｜Layout refinement
+🔎 Model selection｜Accuracy        📝 Release flow｜Docs cleanup
+```
 
-## Why this fork exists
+## Compatibility
 
-`oil-dsh-title@0.1.1` pinned exact peer versions (`0.1.2-rc.1`). DSH 0.2.x gates plugin installation on those declarations and rejects it. The APIs the plugin actually uses are unchanged in 0.2.1-rc.2, so relaxing the ranges to `>=0.1.2-rc.1 <0.3.0` (marked optional, since nothing is imported at runtime) restores installation without changing behaviour.
+| dsh version | Status |
+| --- | --- |
+| 0.2.1-rc.2 (DSH Desktop 0.2.1-rc.2) | Install and runtime verified |
+| 0.1.2-rc.1 | Still supported |
 
-## Differences from upstream
-
-- Semantic peer ranges instead of exact pins.
-- Single trigger (`user/message`) with debounce; route retry; per-session `seq` dedupe.
-- Respects a title you renamed by hand: a free-form title is treated as pinned and never overwritten.
-- Configurable (`debounceMs`, `timeoutMs`, `respectManualTitles`, …).
-- No `prepare` script, so git installs do not need `allowBuilds`.
+Peer range: `>=0.1.2-rc.1 <0.3.0`. 0.3.x is unverified; the upper bound should only move after re-checking the API.
 
 ## Install
+
+```sh
+dsh plugin --profile desktop add dsh-oil-title
+```
+
+Or straight from GitHub:
 
 ```sh
 dsh plugin --profile desktop add github:fengfanfan-max/dsh-oil-title
 ```
 
-Verified on DSH 0.2.1-rc.2: the GitHub install passes the version gate and needs no `allowBuilds` (the package ships no `prepare` script).
+Restart DSH, then send a concrete request in a new session; the sidebar title updates after that turn.
+
+## Configuration
+
+Override the row in `~/.dsh/profiles/<profile>/cordis.patch.yml` (or global `~/.dsh/cordis.patch.yml`):
+
+```yaml
+- id: dsh-oil-title
+  config:
+    enabled: true
+    debounceMs: 600
+    timeoutMs: 60000
+    routeRetryMs: 1500
+    maxMessages: 5
+    maxChars: 600
+    maxConflicts: 16
+    respectManualTitles: true
+```
+
+With `respectManualTitles`, a title you rename by hand into free-form text is treated as pinned and never overwritten automatically.
+
+## Boundaries
+
+- Titles are written only through the official `sessionTitle.rename()`; no provider registration, no core changes, no direct session-store writes.
+- The model sees truncated data only: the latest `maxMessages` user messages (`maxChars` each), the current title, the workspace leaf name, and other live session titles.
+- Failures, timeouts, invalid output, and title conflicts leave the current title untouched and add no messages.
+- No extra network calls, no data upload.
+
+## Relation to upstream
+
+This repository is a fork of [oil-dsh-title](https://github.com/598829314/oil-dsh-title); the naming policy comes from [oil-codex-title](https://github.com/oil-oil/oil-codex-title).
+
+Upstream pins exact peer versions (`0.1.2-rc.1`), which DSH 0.2.x rejects at install time. The APIs used are unchanged between both versions, so a semantic range fixes it. Fixes were sent upstream: [#1 compatibility](https://github.com/598829314/oil-dsh-title/pull/1) · [#2 debounce/dedupe](https://github.com/598829314/oil-dsh-title/pull/2) · [#3 manual pin (draft)](https://github.com/598829314/oil-dsh-title/pull/3). Until they land, this repo maintains the full feature set.
+
+| Aspect | Upstream oil-dsh-title | This repo |
+| --- | --- | --- |
+| Peer versions | Exact `0.1.2-rc.1`, rejected on 0.2.x | Range `>=0.1.2-rc.1 <0.3.0`, optional |
+| Trigger | Fires on two events | Debounced, route retry |
+| Duplicates | Same batch may call the model twice | Deduplicated by latest `seq` |
+| Manual rename | Overwritten later | Treated as pinned |
+| Config | None | See above |
+
+See [docs/兼容性.md](./docs/兼容性.md) for compatibility details (Chinese).
+
+## Development
+
+```sh
+npm test
+npm run check
+```
 
 ## License
 
-MIT. Naming policy: [oil-codex-title](https://github.com/oil-oil/oil-codex-title). DSH integration: [oil-dsh-title](https://github.com/598829314/oil-dsh-title).
+MIT. Naming policy from [oil-codex-title](https://github.com/oil-oil/oil-codex-title) (oil); DSH integration from [oil-dsh-title](https://github.com/598829314/oil-dsh-title) (G_QMark). Not affiliated with DeepSeek.
