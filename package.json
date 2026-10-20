@@ -30,6 +30,7 @@
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",
+    "test:compat": "node scripts/compat-matrix.mjs",
     "check": "npm test && npm pack --dry-run"
   },
   "files": [
@@ -74,5 +75,8 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   }
 }

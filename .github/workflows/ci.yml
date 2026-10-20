@@ -6,7 +6,8 @@ on:
   pull_request:
 
 jobs:
-  test:
+  unit:
+    name: unit / node ${{ matrix.node }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -16,4 +17,35 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
       - run: npm test
+
+  # compat.json 是唯一事实来源：这里读出已验证版本，逐个跑矩阵
+  compat-matrix:
+    name: compat / resolve versions
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.read.outputs.versions }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: read
+        run: echo "versions=$(node -e 'console.log(JSON.stringify(require("./compat.json").verifiedDshVersions))')" >> "$GITHUB_OUTPUT"
+
+  compat:
+    name: compat / dsh ${{ matrix.dsh }}
+    needs: compat-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        dsh: ${{ fromJSON(needs.compat-matrix.outputs.versions) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # 在临时目录安装该版本的官方类型包，用 tsc 编译 test/compat/probe.ts
+      - run: node scripts/compat-matrix.mjs --version "${{ matrix.dsh }}"

@@ -11,10 +11,11 @@ Keeps DeepSeek Harness session titles in sync with the work: after each turn the
 
 | dsh version | Status |
 | --- | --- |
-| 0.2.1-rc.2 (DSH Desktop 0.2.1-rc.2) | Install and runtime verified |
-| 0.1.2-rc.1 | Still supported |
+| 0.2.1-rc.2 (DSH Desktop 0.2.1-rc.2) | Install, runtime, type probe |
+| 0.2.1-rc.1 | Type probe |
+| 0.1.2-rc.1 | Type probe |
 
-Peer range: `>=0.1.2-rc.1 <0.3.0`. 0.3.x is unverified; the upper bound should only move after re-checking the API.
+Peer range: `>=0.1.2-rc.1 <0.3.0`. CI installs each version's official type packages and compiles `test/compat/probe.ts` against them; the probe only calls the APIs this plugin depends on, so a green build means those signatures still hold. Versions live in [`compat.json`](./compat.json). 0.3.x is unverified; move the upper bound only after re-checking.
 
 ## Install
 

@@ -1,0 +1,13 @@
+{
+  "$comment": "CI 会针对下列 dsh 版本安装官方类型包并编译 test/compat/probe.ts；新增版本时同步更新这里与 README。",
+  "packages": [
+    "@deepseek-ai/dsh-session",
+    "@deepseek-ai/dsh-session-title",
+    "@deepseek-ai/dsh-llm"
+  ],
+  "verifiedDshVersions": [
+    "0.1.2-rc.1",
+    "0.2.1-rc.1",
+    "0.2.1-rc.2"
+  ]
+}
