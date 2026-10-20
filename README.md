@@ -39,6 +39,8 @@ Override the row in `~/.dsh/profiles/<profile>/cordis.patch.yml` (or global `~/.
 - id: dsh-oil-title
   config:
     enabled: true
+    reasoning: min        # min | default | <effort-id>
+    debug: false          # decision log, off by default
     debounceMs: 600
     timeoutMs: 60000
     routeRetryMs: 1500
@@ -49,6 +51,10 @@ Override the row in `~/.dsh/profiles/<profile>/cordis.patch.yml` (or global `~/.
 ```
 
 With `respectManualTitles`, a title you rename by hand into free-form text is treated as pinned and never overwritten automatically.
+
+`reasoning` controls thinking on the title call: `min` takes the model's lowest advertised effort (for DeepSeek that is `off`, i.e. thinking disabled); `default` leaves the provider default (usually high). If the chosen effort is rejected, the call retries once without it.
+
+`debug` appends every decision to `~/.dsh/dsh-oil-title.log` (JSONL). It is off in published builds; `scripts/check-release.mjs` blocks `npm publish` while it is enabled.
 
 ## Boundaries
 

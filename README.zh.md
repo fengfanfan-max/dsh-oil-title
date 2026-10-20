@@ -39,6 +39,8 @@ dsh plugin --profile desktop add github:fengfanfan-max/dsh-oil-title
 - id: dsh-oil-title
   config:
     enabled: true
+    reasoning: min        # min | default | <effort-id>
+    debug: false          # 诊断日志，默认关闭
     debounceMs: 600
     timeoutMs: 60000
     routeRetryMs: 1500
@@ -49,6 +51,10 @@ dsh plugin --profile desktop add github:fengfanfan-max/dsh-oil-title
 ```
 
 `respectManualTitles` 打开时，如果你手动把标题改成不符合「emoji 对象｜目标」的自由文本，插件会当成你固定的名字，不再自动覆盖。
+
+`reasoning` 控制标题调用是否思考：`min` 取该模型声明的最低档（DeepSeek 下即 `off`，等价于关闭 thinking），`default` 交给 provider 默认（通常是高档，更贵更慢）。取到的档位若被模型拒绝，会自动降级重试一次。
+
+`debug` 打开后把每个决策点写进 `~/.dsh/dsh-oil-title.log`（JSONL）。发布版默认关闭，`npm publish` 前 `scripts/check-release.mjs` 会强制校验它是 false。
 
 ## 行为边界
 

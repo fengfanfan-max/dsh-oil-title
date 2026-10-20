@@ -1,3 +1,5 @@
+process.env.DSH_OIL_TITLE_DIAG = '0'
+
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
@@ -13,11 +15,11 @@ function userMessage(text, seq = 1) {
   }
 }
 
-function makeSession({ events, route = true } = {}) {
+function makeSession({ events, route = true, model = 'test-model' } = {}) {
   return {
     id: 'session-test',
     header: { cwd: '/tmp/dsh-oil-title' },
-    requestHeader: () => (route ? { config: { provider: 'test-provider', model: 'test-model' } } : undefined),
+    requestHeader: () => (route ? { config: { provider: 'test-provider', model } } : undefined),
     snapshotEvents: () => events ?? [userMessage('请验证 DSH 标题插件的事件监听和自动改名。')],
   }
 }
@@ -113,6 +115,26 @@ test('没有可用路由时不抛错也不改名', async () => {
   state.listener(session, userMessage('没有路由'))
   await settle()
   assert.deepEqual(state.renamed, [])
+  state.cleanup?.()
+})
+
+test('模型不支持指定 reasoning 档位时自动降级重试', async () => {
+  const session = makeSession({ model: 'test-model-effort' })
+  const { ctx, state } = makeCtx(session)
+  const usedEfforts = []
+  ctx.llm.resolveModelInfo = async () => ({ reasoning: { efforts: [{ id: 'off' }, { id: 'high' }] } })
+  ctx.llm.stream = async function* (options) {
+    state.calls += 1
+    usedEfforts.push(options.reasoningEffort)
+    if (options.reasoningEffort) throw new Error('UNSUPPORTED_REASONING_EFFORT: not supported by this model')
+    yield { type: 'block-end', index: 0, block: { type: 'text', text: '{"action":"rename","title":"🧩 DSH插件｜降级重试"}' } }
+    yield { type: 'finish', reason: { kind: 'stop' } }
+  }
+  apply(ctx, CONFIG)
+  state.listener(session, userMessage('测试 reasoning 降级'))
+  await settle()
+  assert.deepEqual(usedEfforts, ['off', undefined])
+  assert.deepEqual(state.renamed, ['🧩 DSH插件｜降级重试'])
   state.cleanup?.()
 })
 

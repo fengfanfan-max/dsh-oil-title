@@ -1,7 +1,7 @@
 {
   "name": "dsh-oil-title",
   "displayName": "DSH Oil Title",
-  "version": "0.1.2",
+  "version": "0.1.6",
   "description": "兼容 DeepSeek Harness 0.1.x~0.2.x 的会话标题插件：按 oil-codex-title 的命名规则，自动维护「类别 emoji + 对象｜目标」形式的会话标题。",
   "author": "Feng Fanfan (fork maintainer)",
   "contributors": [
@@ -31,7 +31,8 @@
   "scripts": {
     "test": "node --test test/*.test.mjs",
     "test:compat": "node scripts/compat-matrix.mjs",
-    "check": "npm test && npm pack --dry-run"
+    "check": "npm test && npm pack --dry-run",
+    "prepublishOnly": "node scripts/check-release.mjs && npm test"
   },
   "files": [
     "lib",
