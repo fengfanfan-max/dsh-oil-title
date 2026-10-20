@@ -1,0 +1,74 @@
+{
+  "name": "dsh-oil-title",
+  "displayName": "DSH Oil Title",
+  "version": "0.1.0",
+  "description": "兼容 DeepSeek Harness 0.1.x~0.2.x 的会话标题插件：按 oil-codex-title 的命名规则，自动维护「类别 emoji + 对象｜目标」形式的会话标题。",
+  "author": "Feng Fanfan (fork maintainer)",
+  "contributors": [
+    "oil (naming rules and original oil-codex-title project)",
+    "G_QMark (oil-dsh-title, the DSH port this fork is based on)"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fengfanfan-max/dsh-oil-title.git"
+  },
+  "homepage": "https://github.com/fengfanfan-max/dsh-oil-title#readme",
+  "bugs": {
+    "url": "https://github.com/fengfanfan-max/dsh-oil-title/issues"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "session-title",
+    "productivity"
+  ],
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "npm test && npm pack --dry-run"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "docs",
+    "prompts",
+    "README.md",
+    "README.zh.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": "./lib/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4.0.2 <5.0.0",
+    "@deepseek-ai/dsh-llm": ">=0.1.2-rc.1 <0.3.0",
+    "@deepseek-ai/dsh-session": ">=0.1.2-rc.1 <0.3.0",
+    "@deepseek-ai/dsh-session-title": ">=0.1.2-rc.1 <0.3.0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-llm": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-session": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-session-title": {
+      "optional": true
+    }
+  }
+}

@@ -1,0 +1,5 @@
+# dsh-oil-title bundle: 监听所有活跃会话，通过官方 sessionTitle.rename() 写入标题。
+# 内置的 first-prompt provider 保持启用；本插件不注册 provider、不改 DSH 核心行。
+- insert:
+    - id: dsh-oil-title
+      name: dsh-oil-title
