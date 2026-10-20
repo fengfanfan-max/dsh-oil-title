@@ -4,6 +4,14 @@
 
 这是 [oil-codex-title](https://github.com/oil-oil/oil-codex-title) 命名规则在 DSH 上的第三个一脉相承的移植：命名策略沿用 oil 的原始设计，DSH 接入层基于 [oil-dsh-title](https://github.com/598829314/oil-dsh-title) 重做，主要解决 **DSH 0.2.x 插件版本门禁拒绝安装** 的问题，并补强并发与「手动固定标题」的行为。
 
+## 上游 PR
+
+- [#1 fix: 放宽 peer 依赖范围](https://github.com/598829314/oil-dsh-title/pull/1) —— 最小兼容修复，只改 peer 范围 + 一条回归测试
+- [#2 perf: 合并连续触发并跳过重复批次](https://github.com/598829314/oil-dsh-title/pull/2) —— 防抖与去重
+- [#3 feat: 用户手动改名后不再自动覆盖](https://github.com/598829314/oil-dsh-title/pull/3) —— 手动固定（草稿，堆叠在 #2 上）
+
+合入进度以 PR 状态为准；本仓库不等上游发版，独立维护完整能力。
+
 ## 为什么需要这个 fork
 
 上游 `oil-dsh-title@0.1.1` 把 peer 依赖锁成了精确版本：
