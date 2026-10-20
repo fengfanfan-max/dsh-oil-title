@@ -19,8 +19,10 @@ This is a fork of [oil-dsh-title](https://github.com/598829314/oil-dsh-title), w
 ## Install
 
 ```sh
-dsh plugin --profile desktop add github:<you>/dsh-oil-title
+dsh plugin --profile desktop add github:fengfanfan-max/dsh-oil-title
 ```
+
+Verified on DSH 0.2.1-rc.2: the GitHub install passes the version gate and needs no `allowBuilds` (the package ships no `prepare` script).
 
 ## License
 

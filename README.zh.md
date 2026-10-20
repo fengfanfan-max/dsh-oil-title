@@ -47,12 +47,14 @@ requirements {"@deepseek-ai/dsh-llm":"0.1.2-rc.1", ...}
 ## 安装
 
 ```sh
-# 本地目录（开发）
-dsh plugin --profile desktop add /path/to/dsh-oil-title
+# GitHub（推荐）
+dsh plugin --profile desktop add github:fengfanfan-max/dsh-oil-title
 
-# GitHub
-dsh plugin --profile desktop add github:<你的账号>/dsh-oil-title
+# 本地目录（开发调试）
+dsh plugin --profile desktop add /path/to/dsh-oil-title
 ```
+
+已在 DSH 0.2.1-rc.2 实测：GitHub 安装通过版本门禁，无需 `allowBuilds`（本包没有 `prepare` 脚本）。
 
 安装后重启 DSH，在新会话里发一条具体需求，等这一轮结束后看侧边栏标题。
 
